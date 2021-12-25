@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import study.datajpatest.domain.Company;
@@ -14,9 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member,Long> {
-
-
-
 
      List<Member> findTop3By();
 
@@ -33,4 +31,8 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
      @EntityGraph(attributePaths = {"company"})
      @Query("select m from Member m")
      Page<Member> findPage(Pageable pageable);
+
+     @Modifying(clearAutomatically = true)
+     @Query("update Member m set m.age = m.age + 10 where m.age > :age")
+     int bulkChange(@Param("age") int age);
 }
